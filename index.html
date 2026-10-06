@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lion vs Dog</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(#87ceeb, #78c850);
+        overflow: hidden;
+    }
+
+    h1 {
+        color: white;
+        text-shadow: 2px 2px 4px #333;
+    }
+
+    #game {
+        width: 95%;
+        max-width: 800px;
+        height: 450px;
+        margin: auto;
+        position: relative;
+        background: linear-gradient(#8ed6ff 0 65%, #5caf3b 65%);
+        border: 4px solid #333;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .animal {
+        position: absolute;
+        bottom: 80px;
+        font-size: 90px;
+        transition: 0.2s;
+    }
+
+    #lion {
+        left: 60px;
+    }
+
+    #dog {
+        right: 60px;
+    }
+
+    .healthBox {
+        position: absolute;
+        top: 15px;
+        width: 30%;
+    }
+
+    #lionBox {
+        left: 20px;
+    }
+
+    #dogBox {
+        right: 20px;
+    }
+
+    .bar {
+        height: 25px;
+        background: red;
+        border: 2px solid #222;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .health {
+        height: 100%;
+        width: 100%;
+        background: limegreen;
+        transition: 0.3s;
+    }
+
+    button {
+        margin: 8px;
+        padding: 12px 22px;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    #message {
+        color: white;
+        font-size: 25px;
+        font-weight: bold;
+        margin: 10px;
+        text-shadow: 2px 2px 3px #333;
+    }
+
+    #controls {
+        margin-top: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🦁 LION VS DOG 🐕</h1>
+
+<div id="message">Apna player choose karo!</div>
+
+<div id="game">
+
+    <div class="healthBox" id="lionBox">
+        🦁 Lion
+        <div class="bar">
+            <div class="health" id="lionHealth"></div>
+        </div>
+    </div>
+
+    <div class="healthBox" id="dogBox">
+        🐕 Dog
+        <div class="bar">
+            <div class="health" id="dogHealth"></div>
+        </div>
+    </div>
+
+    <div id="lion" class="animal">🦁</div>
+    <div id="dog" class="animal">🐕</div>
+
+</div>
+
+<div id="controls">
+    <button onclick="choosePlayer('lion')">🦁 Play as Lion</button>
+    <button onclick="choosePlayer('dog')">🐕 Play as Dog</button>
+    <br>
+    <button onclick="attack()">⚔️ ATTACK</button>
+    <button onclick="restart()">🔄 RESTART</button>
+</div>
+
+<script>
+
+let player = "";
+let lionHP = 100;
+let dogHP = 100;
+let gameOver = false;
+
+function choosePlayer(type) {
+
+    player = type;
+    lionHP = 100;
+    dogHP = 100;
+    gameOver = false;
+
+    document.getElementById("lionHealth").style.width = "100%";
+    document.getElementById("dogHealth").style.width = "100%";
+
+    if (type === "lion") {
+        document.getElementById("message").innerText =
+            "Tum Lion ho! 🦁 Attack button dabao!";
+    } else {
+        document.getElementById("message").innerText =
+            "Tum Dog ho! 🐕 Attack button dabao!";
+    }
+}
+
+function attack() {
+
+    if (player === "" || gameOver) {
+        return;
+    }
+
+    // Player attack
+    let damage = Math.floor(Math.random() * 16) + 10;
+
+    if (player === "lion") {
+        dogHP -= damage;
+
+        document.getElementById("dogHealth").style.width =
+            Math.max(dogHP, 0) + "%";
+
+        document.getElementById("message").innerText =
+            "🦁 Lion ne attack kiya!";
+
+    } else {
+        lionHP -= damage;
+
+        document.getElementById("lionHealth").style.width =
+            Math.max(lionHP, 0) + "%";
+
+        document.getElementById("message").innerText =
+            "🐕 Dog ne attack kiya!";
+    }
+
+    checkWinner();
+
+    if (!gameOver) {
+        setTimeout(enemyAttack, 700);
+    }
+}
+
+function enemyAttack() {
+
+    if (gameOver) return;
